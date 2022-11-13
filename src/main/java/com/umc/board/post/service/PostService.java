@@ -1,6 +1,7 @@
 package com.umc.board.post.service;
 
 import com.umc.board.post.model.Post;
+import com.umc.board.post.model.PostReq;
 import com.umc.board.post.model.PostRes;
 import com.umc.board.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,9 @@ public class PostService {
                 .stream()
                 .map(PostRes::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public void createPost(PostReq postReq) {
+        postRepository.save(postReq.toEntity());
     }
 }

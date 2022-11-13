@@ -18,6 +18,7 @@ public class PostService {
 
     private final PostRepository postRepository;
 
+    @Transactional(readOnly = true)
     public List<PostRes> getAllPosts() {
         return postRepository.findAll()
                 .stream()
@@ -27,5 +28,23 @@ public class PostService {
 
     public void createPost(PostReq postReq) {
         postRepository.save(postReq.toEntity());
+    }
+
+    @Transactional(readOnly = true)
+    public PostRes getPost(Long postId) {
+        Post post = postRepository.findById(postId).
+                orElseThrow(() -> new RuntimeException("존재하지 않는 게시물 ID" + postId));
+        return PostRes.fromEntity(post);
+    }
+
+    public PostRes updatePost(Long postId, PostReq postReq) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시물 ID" + postId));
+        post.updatePost(postReq);
+        return PostRes.fromEntity(post);
+    }
+
+    public void deletePost(Long postId) {
+        postRepository.deleteById(postId);
     }
 }

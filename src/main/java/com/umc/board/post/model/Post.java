@@ -23,4 +23,8 @@ public class Post {
     public Post(String content) {
         this.content = content;
     }
+
+    public void updatePost(PostReq postReq) {
+        this.content = postReq.getContent();
+    }
 }

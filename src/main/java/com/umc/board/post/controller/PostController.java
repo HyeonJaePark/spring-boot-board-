@@ -6,10 +6,7 @@ import com.umc.board.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,9 +21,25 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
+    @GetMapping("posts/{postId}")
+    public ResponseEntity<PostRes> getPost(@PathVariable Long postId) {
+        return ResponseEntity.ok(postService.getPost(postId));
+    }
+
     @PostMapping("posts/new")
     public ResponseEntity<Void> createNewPost(@RequestBody PostReq postReq) {
         postService.createPost(postReq);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("posts/{postId}")
+    public ResponseEntity<PostRes> updatePost(@PathVariable Long postId, @RequestBody PostReq postReq) {
+        return ResponseEntity.ok(postService.updatePost(postId, postReq));
+    }
+
+    @DeleteMapping("posts/{postId}")
+    public ResponseEntity<PostRes> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
         return ResponseEntity.ok().build();
     }
 }

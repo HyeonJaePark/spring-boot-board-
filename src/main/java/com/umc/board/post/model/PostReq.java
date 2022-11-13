@@ -6,4 +6,8 @@ import lombok.Getter;
 public class PostReq {
 
     private String content;
+
+    public Post toEntity() {
+        return new Post(this.content);
+    }
 }

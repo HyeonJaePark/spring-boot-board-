@@ -6,6 +6,8 @@ import com.umc.board.user.model.PostUserRes;
 import com.umc.board.user.model.User;
 import com.umc.board.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +19,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
+    private final PasswordEncoder bCryptPasswordEncoder;
 
 
     @Transactional(readOnly = true)
@@ -33,15 +37,17 @@ public class UserService {
         String pwd;
         try {
             // 암호화
-
+            pwd = bCryptPasswordEncoder.encode(postUserReq.getPassword());
+            postUserReq.setPassword(pwd);
         } catch (Exception e) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("암호화 실패");
         }
+
         try {
             User user = userRepository.save(postUserReq.toEntity());
             return new PostUserRes(user.getId());
         } catch (Exception e) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("실패");
         }
     }
 }

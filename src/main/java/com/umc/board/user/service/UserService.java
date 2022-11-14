@@ -1,9 +1,6 @@
 package com.umc.board.user.service;
 
-import com.umc.board.user.model.GetUserRes;
-import com.umc.board.user.model.PostUserReq;
-import com.umc.board.user.model.PostUserRes;
-import com.umc.board.user.model.User;
+import com.umc.board.user.model.*;
 import com.umc.board.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,7 @@ public class UserService {
     @Transactional
     public PostUserRes createUser(PostUserReq postUserReq) {
         String pwd;
+
         try {
             // 암호화
             pwd = bCryptPasswordEncoder.encode(postUserReq.getPassword());
@@ -49,5 +47,18 @@ public class UserService {
         } catch (Exception e) {
             throw new IllegalStateException("실패");
         }
+    }
+
+    @Transactional
+    public PostLoginRes loginUser(PostLoginReq postLoginReq) {
+
+        User user = userRepository.findByEmail(postLoginReq.getEmail())
+                    .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없음"));
+
+        if (user.checkPassword(postLoginReq.getPassword(), bCryptPasswordEncoder)) {
+            return new PostLoginRes(user.getNickname());
+        }
+
+        return null;
     }
 }

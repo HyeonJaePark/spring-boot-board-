@@ -1,8 +1,6 @@
 package com.umc.board.user.controller;
 
-import com.umc.board.user.model.GetUserRes;
-import com.umc.board.user.model.PostUserReq;
-import com.umc.board.user.model.PostUserRes;
+import com.umc.board.user.model.*;
 import com.umc.board.user.service.UserService;
 import com.umc.board.user.utils.EmailRegex;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +47,26 @@ public class UserController {
 
     /**
      * TODO 로그인 API
+     * @return
      */
-    
+    @ResponseBody
+    @PostMapping("/users/login")
+    public PostLoginRes userLogin(@RequestBody PostLoginReq postLoginReq) {
+
+        // email 혹은 password 가 null 이면 바로 exception 반환
+        if (postLoginReq.getEmail() == null || postLoginReq.getPassword() == null) {
+            throw new IllegalArgumentException("이메일 혹은 패스워드 형식 오류");
+        }
+
+        PostLoginRes postLoginRes;
+        try {
+            postLoginRes = userService.loginUser(postLoginReq);
+        } catch (Exception e) {
+            throw new IllegalStateException("로그인 시도 실패");
+        }
+
+        return postLoginRes;
+    }
 
 
     /**

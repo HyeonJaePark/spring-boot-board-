@@ -4,6 +4,8 @@ import com.umc.board.post.model.PostReq;
 import com.umc.board.post.model.PostRes;
 import com.umc.board.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("/posts/all")
+    @GetMapping("posts/all")
     public ResponseEntity<List<PostRes>> getAllPosts() {
         return ResponseEntity.ok(postService.getAllPosts());
     }
@@ -24,6 +26,11 @@ public class PostController {
     @GetMapping("posts/{postId}")
     public ResponseEntity<PostRes> getPost(@PathVariable Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
+    }
+
+    @GetMapping("posts/list")
+    public ResponseEntity<List<PostRes>> getPostByPage(Pageable pageable) {
+        return ResponseEntity.ok(postService.findAll(pageable).getContent());
     }
 
     @PostMapping("posts/new")
